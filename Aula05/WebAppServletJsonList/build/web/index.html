@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Text list</h1>
+        <input type="text" v-model="newItem">
+        <button @click="add()">+</button>
+        <ul>
+            <li v-for="(item, index) in items" :key="index">
+                {{ item }}
+                <button @click="remove(index)">-</button>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const items = ref([]);
+                const newItem = ref('');
+
+                async function fetchData(newText, indexToRemove) {
+                    let url = 'list.json';
+                    if (newText) url += '?add&text=' + newText;
+                    if (indexToRemove >= 0) url += '?remove&i=' + indexToRemove;
+
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        items.value = data.list; // Atualiza os itens
+                    } catch (error) {
+                        console.error('Erro ao buscar os dados:', error);
+                    }
+                }
+
+                function add() {
+                    if (newItem.value.trim()) {
+                        fetchData(newItem.value);
+                        newItem.value = '';
+                    }
+                }
+
+                function remove(index) {
+                    fetchData(null, index);
+                }
+
+                fetchData();
+
+                return {
+                    items,
+                    newItem,
+                    add,
+                    remove
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
