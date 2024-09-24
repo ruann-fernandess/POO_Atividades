@@ -1,0 +1,5 @@
+<%@ page pageEncoding="UTF-8" %>
+<a href='index.jsp'> Index </a> |
+<a href='juros_simples.jsp'> Juros Simples </a> |
+<a href='juros_compostos.jsp'> Juros Compostos </a> |
+
